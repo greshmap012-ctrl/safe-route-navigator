@@ -27,7 +27,7 @@ app.get("/api/test", (req, res) => {
 
 // Get all hazard reports
 app.get("/api/hazards", (req, res) => {
-  res.json(hazards);
+  res.send("SafeRoute Navigator Backend is running!");
 });
 
 // Verify a hazard report
