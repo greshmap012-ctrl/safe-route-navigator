@@ -1,0 +1,205 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SafeRoute Navigator</title>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <header class="app-header">
+        <div class="header-brand">
+            <div class="brand-icon">S</div>
+            <div>
+                <h1>SafeRoute Navigator</h1>
+                <p>Find routes. Report hazards. Travel aware.</p>
+            </div>
+        </div>
+
+        <div class="header-actions">
+            <span id="connection" class="connection-badge">Connecting to backend...</span>
+            <button id="themeToggle" type="button" aria-pressed="false">🌙 Dark Mode</button>
+        </div>
+    </header>
+
+    <main class="app-layout">
+        <aside class="dashboard-sidebar">
+            <div class="sidebar-brand">
+                <div class="sidebar-brand-icon">⌖</div>
+                <div>
+                    <h2>SafeRoute</h2>
+                    <p>SAFETY NAVIGATOR</p>
+                </div>
+            </div>
+
+            <p class="sidebar-label">WORKSPACE</p>
+
+            <nav class="sidebar-nav">
+                <a href="#dashboard-home" class="sidebar-link active"><span>▦</span> Dashboard</a>
+                <a href="#route-search" class="sidebar-link"><span>⌖</span> Plan a Route</a>
+                <a href="#map"><span>◎</span> Live Map</a>
+                <a href="#hazard-report" class="sidebar-link"><span>⚑</span> Report Hazard</a>
+                <a href="#community-reports" class="sidebar-link"><span>▤</span> Community Reports</a>
+                <a href="#alternativeRoutesPanel" class="sidebar-link"><span>⇄</span> Route Comparison</a>
+            </nav>
+
+            <div class="sidebar-footer">
+                <span class="status-dot"></span> Navigation services
+                <small>Check connection status above</small>
+            </div>
+        </aside>
+
+        <div class="dashboard-content" id="dashboard-home">
+            <section class="welcome-banner">
+                <div>
+                    <span class="eyebrow">YOUR JOURNEY, YOUR SAFETY</span>
+                    <h2>Where are you heading today?</h2>
+                    <p>Plan your journey and review community-reported hazards along the way.</p>
+                </div>
+                <div class="welcome-symbol">✦</div>
+            </section>
+
+            <div class="top-grid">
+                <section class="panel" id="route-search">
+                    <div class="section-heading">
+                        <div>
+                            <span class="section-kicker">NAVIGATION</span>
+                            <h2>Plan your route</h2>
+                        </div>
+                        <span class="heading-icon">⌖</span>
+                    </div>
+
+                    <label for="start">Starting location</label>
+                    <input id="start" placeholder="Enter starting location">
+
+                    <button id="gpsBtn" class="button-secondary" type="button">◎ Use My Current Location</button>
+
+                    <label for="destination">Destination</label>
+                    <input id="destination" placeholder="e.g. Benz Circle, Vijayawada">
+
+                    <button id="routeBtn" type="button">Find Route <span>→</span></button>
+                    <p id="status" class="status-message">Enter a destination to start.</p>
+                </section>
+
+                <section class="panel route-info-panel">
+                    <div class="section-heading">
+                        <div>
+                            <span class="section-kicker">JOURNEY OVERVIEW</span>
+                            <h2>Route information</h2>
+                        </div>
+                        <span class="heading-icon">◷</span>
+                    </div>
+
+                    <div class="metric-grid">
+                        <div class="metric-card">
+                            <span class="metric-icon">↔</span>
+                            <p>Distance</p>
+                            <strong id="distance">--</strong>
+                        </div>
+                        <div class="metric-card">
+                            <span class="metric-icon">◷</span>
+                            <p>Estimated time</p>
+                            <strong id="duration">--</strong>
+                        </div>
+                        <div class="metric-card">
+                            <span class="metric-icon">⚑</span>
+                            <p>Reported hazards</p>
+                            <strong id="routeHazards">--</strong>
+                        </div>
+                        <div class="metric-card">
+                            <span class="metric-icon">✦</span>
+                            <p>Experimental score</p>
+                            <strong id="safetyScore">--</strong>
+                        </div>
+                    </div>
+                    <p id="safetyWarning" class="safety-warning">Find a route to check reported hazards.</p>
+                </section>
+            </div>
+
+            <section class="panel map-panel">
+                <div class="section-heading">
+                    <div>
+                        <span class="section-kicker">LIVE NAVIGATION</span>
+                        <h2>Explore the map</h2>
+                        <p class="section-description">View routes and community-reported hazard locations.</p>
+                    </div>
+                    <span class="live-badge"><span class="status-dot"></span> Map view</span>
+                </div>
+                <div id="map"></div>
+            </section>
+
+            <section class="panel" id="alternativeRoutesPanel">
+                <div class="section-heading">
+                    <div>
+                        <span class="section-kicker">COMPARE OPTIONS</span>
+                        <h2>Alternative routes</h2>
+                        <p class="section-description">Compare distance, travel time and reported hazards.</p>
+                    </div>
+                    <span class="heading-icon">⇄</span>
+                </div>
+                <div id="alternativeRoutes">
+                    <p class="empty-message">Find a route to see available alternatives.</p>
+                </div>
+            </section>
+
+            <div class="bottom-grid">
+                <section class="panel" id="hazard-report">
+                    <div class="section-heading">
+                        <div>
+                            <span class="section-kicker">COMMUNITY SAFETY</span>
+                            <h2>Report a hazard</h2>
+                        </div>
+                        <span class="heading-icon">⚑</span>
+                    </div>
+
+                    <p class="section-description">Choose a location on the map before saving your report.</p>
+                    <button id="reportBtn" class="button-secondary" type="button">＋ Choose Hazard Location</button>
+
+                    <label for="hazardType">Hazard type</label>
+                    <select id="hazardType">
+                        <option>Poor lighting</option>
+                        <option>Waterlogging</option>
+                        <option>Accident-prone spot</option>
+                        <option>Unsafe area</option>
+                        <option>Other</option>
+                    </select>
+
+                    <label for="description">Description</label>
+                    <input id="description" placeholder="Describe the hazard">
+
+                    <button id="saveBtn" type="button">Save Hazard Report</button>
+                    <p id="reportStatus" class="status-message">No location selected.</p>
+                </section>
+
+                <section class="panel" id="community-reports">
+                    <div class="section-heading">
+                        <div>
+                            <span class="section-kicker">LOCAL UPDATES</span>
+                            <h2>Community reports</h2>
+                        </div>
+                        <span class="heading-icon">▤</span>
+                    </div>
+
+                    <p class="section-description">Review reported hazards and their verification status.</p>
+                    <button id="refreshBtn" class="button-secondary" type="button">↻ Refresh Reports</button>
+                    <div id="reports">Loading reports...</div>
+                </section>
+            </div>
+
+            <footer class="app-footer">
+                <span>SafeRoute Navigator</span>
+                <span>Plan thoughtfully. Travel aware.</span>
+            </footer>
+        </div>
+    </main>
+
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+    <script src="script.js"></script>
+</body>
+</html>
